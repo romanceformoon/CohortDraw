@@ -6,9 +6,12 @@ import seaborn as sns
 START_WEEK = 9
 END_WEEK = 13
 
+user_count = []
+
 
 def w_cohort(df, n):
     w_0 = len(df["user_id"][df["week"] == n].unique())
+    user_count.append(w_0)
     w_co_list = [w_0]
     r_list = [(w_0 / w_0) * 100]
     w_cohort_rate_df = pd.DataFrame()
@@ -27,7 +30,7 @@ def w_cohort(df, n):
     return w_cohort_rate_df
 
 
-data = pd.read_csv("test.csv")
+data = pd.read_csv("input.csv")
 data = data.dropna()
 
 w_9 = w_cohort(data, 9)
@@ -46,8 +49,24 @@ cohort.index = np.arange(1, len(cohort) + 1)
 
 print(cohort)
 
-ax = sns.heatmap(cohort, annot=True, fmt="f")
+x_axis_labels = ["Week 1", "Week 2", "Week 3", "Week 4"]  # labels for x-axis
+y_axis_labels = [
+    f"2023/3/4 ~ 2023/3/10\n{str(user_count[0])} users",
+    f"2023/3/11 ~ 2023/3/17\n{str(user_count[1])} users",
+    f"2023/3/18 ~ 2023/3/24\n{str(user_count[2])} users",
+    f"2023/3/25 ~ 2023/3/31\n{str(user_count[3])} users",
+]  # labels for y-axis
 
-plt.title("Cohort Retention Rate(W) [2023/3/3 ~ 2023/3/28]", fontsize=14)
+plt.figure(figsize=(16, 7))
+
+ax = sns.heatmap(
+    cohort,
+    annot=True,
+    fmt=".2f",
+    xticklabels=x_axis_labels,
+    yticklabels=y_axis_labels,
+)
+
+plt.title("Cohort Retention Rate(W) [2023/3/4 ~ 2023/3/31]", fontsize=14)
 
 plt.show()
